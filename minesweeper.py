@@ -2,7 +2,7 @@ import random
 import pygame
 
 pygame.init()
-
+#Informations sur la fenêtre
 tile_size = 32
 nrow = 10
 ncol = 10
