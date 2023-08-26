@@ -4,10 +4,10 @@ import pygame
 pygame.init()
 #Informations sur la fenêtre
 tile_size = 32
-nrow = 10
-ncol = 10
+nrow = 16
+ncol = 30
 pos = [(i,j) for i in range(nrow) for j in range(ncol)]
-nbombs = 10
+nbombs = 99
 grid = []
 bombs = []
 timer = pygame.time.Clock()
@@ -229,12 +229,12 @@ def loop():
                                         tile.reveal()
                                         
 
-                                    elif tile.number == -1:
+                                    elif tile.number == -1 and not tile.flag:
                                         tile.reveal()
                                         state = "lose"
                                         tile.bombclick = True
                                     
-                                    else:
+                                    elif not tile.flag:
                                         tile.reveal()
                                 
                                 elif event.button == 3:
