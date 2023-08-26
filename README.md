@@ -1,5 +1,6 @@
+Author: Arthur Mélot
 Python 3.9.7
-You need to install pygame to run this program
+You need to install pygame to run this program and you can use it as you want
 
 Here is a program that I made for fun and for learning how to use pygame. This program greatly inspired by 
 https://github.com/Harrelix/Minesweeper/tree/master (this is where i found the sprites of the tiles!)
@@ -11,4 +12,3 @@ TODO:
 - Improve GUI
 - Add the double r-click that shows a question mark (maybe)
 - Optimise code (hehe oops)
-Author: Arthur Mélot
