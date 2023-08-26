@@ -10,4 +10,5 @@ I have enhanced this version by adding the double left-click revealing surroundi
 TODO: 
 - Improve GUI
 - Add the double r-click that shows a question mark (maybe)
+- Optimise code (hehe oops)
 Author: Arthur Mélot
