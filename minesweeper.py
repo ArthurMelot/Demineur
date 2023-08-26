@@ -4,10 +4,10 @@ import pygame
 pygame.init()
 #Informations sur la fenêtre
 tile_size = 32
-nrow = 16
-ncol = 30
+nrow = 10
+ncol = 10
 pos = [(i,j) for i in range(nrow) for j in range(ncol)]
-nbombs = 99
+nbombs = 10
 grid = []
 bombs = []
 timer = pygame.time.Clock()
@@ -282,9 +282,9 @@ def loop():
         window.blit(text, (width - border - 100, border))
 
         text = pygame.font.SysFont("Calibri", 40).render("Démineur", True, (0, 0, 0))
-        window.blit(text, (width//2 - 50, 50))
-        
-
+        text_rect = text.get_rect()
+        text_rect.center = (width//2, up_border//2 + 15)
+        window.blit(text,text_rect)
         pygame.display.update()
 
         timer.tick(15)  
