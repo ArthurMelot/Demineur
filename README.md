@@ -4,8 +4,10 @@ You need to install pygame to run this program
 Here is a program that I made for fun and for learning how to use pygame. This program greatly inspired by 
 https://github.com/Harrelix/Minesweeper/tree/master (this is where i found the sprites of the tiles!)
 
-TODO: 
-- Add an auto-reroll of the grid if the first click is a bomb/a number != 0
-- Add the left-click on already clicked tiles if bombs around are flagged to reveal all its neighbours
+I have enhanced this version by adding the double left-click revealing surrounding cells when we flagged enough bombs around
+(see https://xn--dmineur-bya.eu/) and i implemented auto reroll when the first tile we l-click and/or its neighbours are bombs
 
+TODO: 
+- Improve GUI
+- Add the double r-click that shows a question mark (maybe)
 Author: Arthur Mélot

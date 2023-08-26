@@ -4,10 +4,10 @@ import pygame
 pygame.init()
 #Informations sur la fenêtre
 tile_size = 32
-nrow = 10
-ncol = 10
+nrow = 16
+ncol = 30
 pos = [(i,j) for i in range(nrow) for j in range(ncol)]
-nbombs = 10
+nbombs = 99
 grid = []
 bombs = []
 timer = pygame.time.Clock()
@@ -46,6 +46,7 @@ class Tile:
         self.col = col
         self.flag = False
         self.clicked = False
+        self.double_clicked = False
         self.bombwrong = False
         self.bombclick = False
         self.number = number   #-1 pour bombe
@@ -90,6 +91,24 @@ class Tile:
 
     
     def reveal(self):
+
+        #Double L-click
+        if self.clicked == True and self.number > 0 and self.double_clicked == False:
+            neigh_flags = 0
+            neighbours = set()
+            for x in range(-1,2):
+                if self.row+x >= 0 and self.row+x < nrow:
+                    for y in range(-1,2):
+                        if self.col+y >= 0 and self.col+y < ncol:
+                            neighbours.add(grid[self.row+x][self.col+y])
+                            if grid[self.row+x][self.col+y].flag == True:
+                                neigh_flags += 1
+                                self.double_clicked = True
+            if neigh_flags >= self.number:
+                for tile in neighbours:
+                    if not tile.clicked and not tile.flag:
+                        tile.reveal()
+
         self.clicked = True
         if self.number == 0:
             for x in range(-1,2):
@@ -113,17 +132,9 @@ class Tile:
                             if grid[self.row+x][self.col+y].number == -1:
                                 self.number += 1
 
-def loop():
-    n_clicks = 0
-    state = "playing"
+def reset_grid():
     global grid
     global bombs
-    grid = []
-    time = 0
-    bombs_left = nbombs
-
-    #Bombs generation
-    
     bombs = random.sample(pos,nbombs)
     
     #Grid generation
@@ -141,6 +152,20 @@ def loop():
     for row in grid:
         for tile in row:
             tile.update()
+    
+
+def loop():
+    n_clicks = 0
+    state = "playing"
+    global grid
+    global bombs
+    grid = []
+    time = 0
+    bombs_left = nbombs
+
+    #Grid generation
+    
+    reset_grid()
 
     #Loop
     while state != "exit":
@@ -164,14 +189,53 @@ def loop():
                                 if event.button == 1:
                                     #L-click
                                     n_clicks += 1
-                                    tile.reveal()
-                                    if n_clicks == 1 and tile.number != 0 and not tile.clicked:
-                                        state = "exit"
-                                        loop()
-                                    
+                                    fneighs = set()
+                                    if n_clicks == 1 and tile.number != 0:
+                                        for x in range(-1,2):
+                                            if tile.row+x >= 0 and tile.row+x < nrow:
+                                                for y in range(-1,2):
+                                                    if tile.col+y >= 0 and tile.col + y < ncol:
+                                                        fneighs.add((tile.row+x,tile.col+y))
+
+                                        count = 0
+                                        for n in fneighs:
+                                            if n in bombs:
+                                                bombs.remove(n)
+                                                count += 1
+                                            
+                                            grid[n[0]][n[1]].number = 0
+                                        
+                                        newpos = pos.copy()
+                                        for p in fneighs:
+                                            newpos.remove(p)
+                                        for b in bombs:
+                                            newpos.remove(b)
+                                        
+                                        new_bombs = random.sample(newpos,count)
+                                        for b in new_bombs:
+                                            bombs.append(b)
+                                            grid[b[0]][b[1]].number = -1
+
+                                        for line in grid:
+                                            for a in line:
+                                                a.number = 0
+                                                if (a.row,a.col) in bombs:
+                                                    a.number = -1
+                                                
+                                        for line in grid:
+                                            for a in line:
+                                                a.update()        
+                                        
+                                        tile.reveal()
+                                        
+
                                     elif tile.number == -1:
+                                        tile.reveal()
                                         state = "lose"
                                         tile.bombclick = True
+                                    
+                                    else:
+                                        tile.reveal()
                                 
                                 elif event.button == 3:
                                     if not tile.clicked:
@@ -189,6 +253,9 @@ def loop():
                 tile.show_image()
                 if tile.number != -1 and not tile.clicked:
                     win = False
+                
+                elif tile.clicked and tile.number == -1:
+                    state = "lose"
         
         if win and state != "exit":
             state = "win"
@@ -213,6 +280,10 @@ def loop():
         # Draw mine left
         text = pygame.font.SysFont("Calibri", 20).render("Bombs left:{0}".format(bombs_left), True, (0, 0, 0))
         window.blit(text, (width - border - 100, border))
+
+        text = pygame.font.SysFont("Calibri", 40).render("Démineur", True, (0, 0, 0))
+        window.blit(text, (width//2 - 50, 50))
+        
 
         pygame.display.update()
 
